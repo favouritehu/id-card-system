@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
+import basicAuth from 'express-basic-auth';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,11 +14,22 @@ const PORT = process.env.PORT || 3000;
 const DB_FILE = path.join(__dirname, 'database.json');
 const MONGODB_URI = process.env.MONGODB_URI;
 
+// Password Protection
+const APP_PASSWORD = process.env.APP_PASSWORD || 'favouritefab@00';
+
 // Check if we should use MongoDB (cloud) or JSON file (offline)
 const useMongoDb = !!MONGODB_URI;
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+
+// Basic Authentication - protects entire app
+app.use(basicAuth({
+    users: { 'admin': APP_PASSWORD },
+    challenge: true,
+    realm: 'ID Card System',
+    unauthorizedResponse: 'Access denied. Please enter correct credentials.'
+}));
 
 // Serve static files from the React build
 app.use(express.static(path.join(__dirname, 'dist')));
