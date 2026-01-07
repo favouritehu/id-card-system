@@ -62,10 +62,26 @@ const defaultData = {
 };
 
 // Connect to MongoDB if URI is provided
+let mongoConnected = false;
+
 if (useMongoDb) {
-    mongoose.connect(MONGODB_URI)
-        .then(() => console.log('✅ Connected to MongoDB Atlas'))
-        .catch(err => console.error('❌ MongoDB connection error:', err));
+    console.log('🔄 Attempting MongoDB connection...');
+    console.log('   URI starts with:', MONGODB_URI?.substring(0, 30) + '...');
+
+    mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
+    })
+        .then(() => {
+            console.log('✅ Connected to MongoDB Atlas');
+            mongoConnected = true;
+        })
+        .catch(err => {
+            console.error('❌ MongoDB connection error:', err.message);
+            console.log('⚠️ Falling back to JSON file mode');
+        });
+} else {
+    console.log('ℹ️ No MONGODB_URI found, using JSON file mode');
 }
 
 // ==================== API ROUTES ====================
