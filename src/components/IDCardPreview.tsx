@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import QRCode from 'qrcode';
+import React from 'react';
 import type { CompanyConfig, Employee } from '../types';
 
 interface IDCardPreviewProps {
@@ -10,15 +9,6 @@ interface IDCardPreviewProps {
 }
 
 export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee, scale = 1, side = 'front' }) => {
-    const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
-
-    useEffect(() => {
-        // Generate QR Code containing Employee ID and Name
-        const data = JSON.stringify({ id: employee.employeeId, name: employee.name });
-        QRCode.toDataURL(data, { margin: 0, width: 100, color: { dark: '#000000', light: '#ffffff00' } }, (err, url) => {
-            if (!err) setQrCodeUrl(url);
-        });
-    }, [employee.employeeId, employee.name]);
 
     // Vertical ID Card: 5.5cm x 8.5cm (at 96 DPI: ~208px x ~321px)
     const baseWidth = 208;
@@ -194,13 +184,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
 
                 </div>
 
-                {/* QR Code - Bottom */}
-                {qrCodeUrl && (
-                    <div style={{ textAlign: 'center', marginTop: `${4 * scale}px`, flexShrink: 0 }}>
-                        <img src={qrCodeUrl} alt="QR" style={{ width: `${40 * scale}px`, height: `${40 * scale}px` }} />
-                        <div style={{ fontSize: `${7 * scale}px`, color: '#64748b', marginTop: `${1 * scale}px` }}>SCAN FOR ATTENDANCE</div>
-                    </div>
-                )}
+
 
             </div>
 
