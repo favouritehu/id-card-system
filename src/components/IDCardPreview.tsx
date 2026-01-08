@@ -124,13 +124,13 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
 
                 {/* Photo - Centered */}
                 <div style={{
-                    width: `${80 * scale}px`,
-                    height: `${80 * scale}px`,
+                    width: `${90 * scale}px`,
+                    height: `${90 * scale}px`,
                     borderRadius: `${8 * scale}px`,
                     border: `${2 * scale}px solid #e2e8f0`,
                     overflow: 'hidden',
                     backgroundColor: '#f8fafc',
-                    marginBottom: `${6 * scale}px`,
+                    marginBottom: `${5 * scale}px`,
                     flexShrink: 0
                 }}>
                     {employee.photoUrl ? (
@@ -148,7 +148,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
                 </h2>
 
                 {/* Details - Vertical List */}
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: `${3 * scale}px`, flex: 1 }}>
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: `${2 * scale}px`, flex: 1 }}>
 
                     {/* ID */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -191,7 +191,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
             {/* Zone Color Strip */}
             {employee.zoneColor && (
                 <div style={{
-                    height: `${18 * scale}px`,
+                    height: `${22 * scale}px`,
                     backgroundColor: employee.zoneColor,
                     width: '100%',
                     flexShrink: 0
