@@ -85,11 +85,14 @@ function App() {
 
   const saveData = async (newCompany: CompanyConfig, newEmployees: Employee[]) => {
     try {
-      await fetch('/api/data', {
+      const response = await fetch('/api/data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ company: newCompany, employees: newEmployees })
       });
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}`);
+      }
     } catch (err) {
       console.error("Failed to save data", err);
       alert("Failed to save data to server.");
