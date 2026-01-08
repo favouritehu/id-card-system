@@ -6,6 +6,34 @@ import { IDCardPreview } from './components/IDCardPreview';
 import { PrintLayout } from './components/PrintLayout';
 import type { CompanyConfig, Employee } from './types';
 
+// Toast notification component
+const Toast = ({ message, type, onClose }: { message: string; type: 'success' | 'error'; onClose: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      padding: '1rem 1.5rem',
+      borderRadius: '8px',
+      backgroundColor: type === 'success' ? '#22c55e' : '#ef4444',
+      color: 'white',
+      fontWeight: 600,
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 9999,
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem'
+    }}>
+      {type === 'success' ? '✓' : '✕'} {message}
+    </div>
+  );
+};
+
 // Placeholder components
 const Preview = ({ company, employees }: { company: CompanyConfig; employees: Employee[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,6 +82,7 @@ const Preview = ({ company, employees }: { company: CompanyConfig; employees: Em
 function App() {
   const [activeTab, setActiveTab] = useState('admin');
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   // Initial State
   const [companyConfig, setCompanyConfig] = useState<CompanyConfig>({
@@ -93,9 +122,10 @@ function App() {
       if (!response.ok) {
         throw new Error(`Server responded with ${response.status}`);
       }
+      setToast({ message: 'Data saved successfully!', type: 'success' });
     } catch (err) {
       console.error("Failed to save data", err);
-      alert("Failed to save data to server.");
+      setToast({ message: 'Failed to save data to server.', type: 'error' });
     }
   };
 
@@ -132,6 +162,7 @@ function App() {
       <main className="main-content">
         {renderContent()}
       </main>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }
