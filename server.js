@@ -52,6 +52,8 @@ const DataSchema = new mongoose.Schema({
         employeeId: String,
         phone: String,
         email: String,
+        emergencyContact: String,
+        address: String,
         photoUrl: String,
         zoneColor: String
     }]
