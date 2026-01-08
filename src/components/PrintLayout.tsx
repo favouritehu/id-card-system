@@ -191,7 +191,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) 
                                             )}
                                         </div>
 
-                                        <div style={{ transform: 'scale(0.8)', transformOrigin: 'top left', height: '220px', width: '280px', overflow: 'hidden' }}>
+                                        <div style={{ transform: 'scale(0.55)', transformOrigin: 'top left', height: '180px', width: '120px', overflow: 'visible' }}>
                                             <IDCardPreview company={company} employee={emp} />
                                         </div>
                                     </div>
@@ -211,7 +211,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) 
                             position: 'fixed',
                             top: 0,
                             left: 0,
-                            width: '1000px',
+                            width: '2000px',
                             zIndex: -1000,
                             opacity: 0, // Make it invisible to user
                             pointerEvents: 'none'

@@ -22,21 +22,27 @@ export const generatePDF = async (
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    // Card dimensions in mm
-    const cardWidth = 85.6;
-    const cardHeight = 53.98;
-    const bleed = printConfig.showBleed ? 3 : 0; // 3mm bleed
+    // Card dimensions in mm (5.5cm x 8.5cm vertical card)
+    const cardWidth = 55;
+    const cardHeight = 85;
+    const bleed = printConfig.showBleed ? 2 : 0; // 2mm bleed for tighter layout
+    const minMargin = 5; // Minimum 5mm margin from page edges
 
     const fullWidth = cardWidth + (bleed * 2);
     const fullHeight = cardHeight + (bleed * 2);
 
-    // Calculate grid
-    const colCount = Math.floor(pageWidth / fullWidth);
-    const rowCount = Math.floor(pageHeight / fullHeight);
+    // Calculate available space after minimum margins
+    const availableWidth = pageWidth - (minMargin * 2);
+    const availableHeight = pageHeight - (minMargin * 2);
+
+    // Calculate grid - maximize cards per page
+    const colCount = Math.floor(availableWidth / fullWidth);
+    const rowCount = Math.floor(availableHeight / fullHeight);
 
     const totalWidth = colCount * fullWidth;
     const totalHeight = rowCount * fullHeight;
 
+    // Center the cards on the page
     const marginX = (pageWidth - totalWidth) / 2;
     const marginY = (pageHeight - totalHeight) / 2;
 
