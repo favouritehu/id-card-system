@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Upload } from 'lucide-react';
 import type { CompanyConfig } from '../types';
+import { compressLogo } from '../utils/imageCompression';
 
 interface AdminPanelProps {
     config: CompanyConfig;
@@ -16,14 +17,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ config, onUpdate }) => {
     // Watch for changes to auto-save or preview
     // const watchedValues = watch();
 
-    const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setValue('logoUrl', reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            try {
+                const compressedImage = await compressLogo(file);
+                setValue('logoUrl', compressedImage);
+            } catch (err) {
+                console.error('Failed to compress logo:', err);
+                alert('Failed to process image. Please try a smaller file.');
+            }
         }
     };
 

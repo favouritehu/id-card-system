@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Plus, Trash2, Edit2, Upload, X, Users } from 'lucide-react';
 import type { Employee } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { compressPhoto } from '../utils/imageCompression';
 
 interface EmployeeManagerProps {
     employees: Employee[];
@@ -56,14 +57,16 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ employees, set
         reset({ name: '', department: '', employeeId: '', photoUrl: null });
     };
 
-    const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setValue('photoUrl', reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            try {
+                const compressedImage = await compressPhoto(file);
+                setValue('photoUrl', compressedImage);
+            } catch (err) {
+                console.error('Failed to compress photo:', err);
+                alert('Failed to process image. Please try a smaller file.');
+            }
         }
     };
 
