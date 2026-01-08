@@ -124,7 +124,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
                 justifyContent: 'center',
                 flexShrink: 0
             }}>
-                <div style={{ fontWeight: 800, fontSize: `${11 * scale}px`, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>
+                <div style={{ fontWeight: 800, fontSize: `${13 * scale}px`, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>
                     {company.name}
                 </div>
             </div>
@@ -153,7 +153,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
                 </div>
 
                 {/* Employee Name */}
-                <h2 style={{ margin: `0 0 ${4 * scale}px`, fontSize: `${12 * scale}px`, fontWeight: 800, color: '#0f172a', textAlign: 'center' }}>
+                <h2 style={{ margin: `0 0 ${4 * scale}px`, fontSize: `${14 * scale}px`, fontWeight: 800, color: '#0f172a', textAlign: 'center' }}>
                     {employee.name}
                 </h2>
 
@@ -162,32 +162,32 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
 
                     {/* ID */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: `${7 * scale}px`, color: '#64748b', fontWeight: 600 }}>ID NO:</span>
-                        <span style={{ fontSize: `${8 * scale}px`, color: '#0f172a', fontWeight: 700 }}>{employee.employeeId}</span>
+                        <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>ID NO:</span>
+                        <span style={{ fontSize: `${10 * scale}px`, color: '#0f172a', fontWeight: 700 }}>{employee.employeeId}</span>
                     </div>
 
                     {/* Dept */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: `${7 * scale}px`, color: '#64748b', fontWeight: 600 }}>DEPT:</span>
-                        <span style={{ fontSize: `${8 * scale}px`, color: '#0f172a', fontWeight: 600 }}>{employee.department}</span>
+                        <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>DEPT:</span>
+                        <span style={{ fontSize: `${10 * scale}px`, color: '#0f172a', fontWeight: 600 }}>{employee.department}</span>
                     </div>
 
                     {/* Phone */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: `${7 * scale}px`, color: '#64748b', fontWeight: 600 }}>PHONE:</span>
-                        <span style={{ fontSize: `${8 * scale}px`, color: '#0f172a' }}>{employee.phone || 'N/A'}</span>
+                        <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>PHONE:</span>
+                        <span style={{ fontSize: `${10 * scale}px`, color: '#0f172a' }}>{employee.phone || 'N/A'}</span>
                     </div>
 
                     {/* Emergency */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: `${7 * scale}px`, color: '#ef4444', fontWeight: 600 }}>EMERGENCY:</span>
-                        <span style={{ fontSize: `${8 * scale}px`, color: '#ef4444', fontWeight: 700 }}>{employee.emergencyContact || 'N/A'}</span>
+                        <span style={{ fontSize: `${9 * scale}px`, color: '#ef4444', fontWeight: 600 }}>EMERGENCY:</span>
+                        <span style={{ fontSize: `${10 * scale}px`, color: '#ef4444', fontWeight: 700 }}>{employee.emergencyContact || 'N/A'}</span>
                     </div>
 
                     {/* Address */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: `${1 * scale}px` }}>
-                        <span style={{ fontSize: `${7 * scale}px`, color: '#64748b', fontWeight: 600 }}>ADDRESS:</span>
-                        <span style={{ fontSize: `${7 * scale}px`, color: '#0f172a', lineHeight: 1.3 }}>
+                        <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>ADDRESS:</span>
+                        <span style={{ fontSize: `${9 * scale}px`, color: '#0f172a', lineHeight: 1.3 }}>
                             {employee.address || 'N/A'}
                         </span>
                     </div>
@@ -198,7 +198,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
                 {qrCodeUrl && (
                     <div style={{ textAlign: 'center', marginTop: `${4 * scale}px`, flexShrink: 0 }}>
                         <img src={qrCodeUrl} alt="QR" style={{ width: `${40 * scale}px`, height: `${40 * scale}px` }} />
-                        <div style={{ fontSize: `${5 * scale}px`, color: '#64748b', marginTop: `${1 * scale}px` }}>SCAN FOR ATTENDANCE</div>
+                        <div style={{ fontSize: `${7 * scale}px`, color: '#64748b', marginTop: `${1 * scale}px` }}>SCAN FOR ATTENDANCE</div>
                     </div>
                 )}
 
