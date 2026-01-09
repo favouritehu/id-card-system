@@ -46,35 +46,11 @@ export const generatePDF = async (
     const marginX = (pageWidth - totalWidth) / 2;
     const marginY = (pageHeight - totalHeight) / 2;
 
-    // We need to render each card to an image.
-    // Strategy: 
-    // 1. Create a temporary container in the DOM hidden from view but rendered.
-    // 2. Render IDCardPreview into it for each employee (or one generic template if we swap text - but React makes it easier to just render).
-    // 3. Use html2canvas.
-
-    // NOTE: In a real app, we'd iterate. For this prototype, we'll assume the caller passes the DOM elements or we select them from the Preview list?
-    // Easier: The caller (PrintLayout) renders the cards in a hidden div, and passes refs or we query them.
-    // Let's assume we query by ID convention: `card-print-{employeeId}`.
-
-    // Capture Back Card Template if needed
-    let backCardImgData: string | null = null;
-    if (printConfig.printBackSide) {
-        const backEl = document.getElementById('card-print-back-template');
-        if (backEl) {
-            try {
-                const canvas = await html2canvas(backEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
-                backCardImgData = canvas.toDataURL('image/jpeg', 1.0);
-            } catch (e) {
-                console.error("Failed to capture back template", e);
-            }
-        }
-    }
-
     let pageIndex = 0;
     let countOnPage = 0;
 
-    // Track positions on current page for back-side generation
-    let currentPagePositions: { col: number, row: number }[] = [];
+    // Track positions and employee IDs on current page for back-side generation
+    let currentPageData: { col: number, row: number, empId: string }[] = [];
 
     const drawCutMarks = (x: number, y: number) => {
         if (!printConfig.showCutMarks) return;
@@ -120,14 +96,14 @@ export const generatePDF = async (
             doc.addImage(imgData, 'JPEG', x + bleed, y + bleed, cardWidth, cardHeight);
             drawCutMarks(x, y);
 
-            currentPagePositions.push({ col, row });
+            currentPageData.push({ col, row, empId: emp.id });
             countOnPage++;
 
             // Check if page full OR last item
             if (countOnPage >= colCount * rowCount || i === employees.length - 1) {
 
                 // If back side printing enabled, add Back Side Page IMMEDIATELY after this front page
-                if (printConfig.printBackSide && backCardImgData) {
+                if (printConfig.printBackSide) {
                     doc.addPage(); // Page 2 (Backs)
 
                     // Render backs for the items on the previous page
@@ -136,22 +112,37 @@ export const generatePDF = async (
                     // Col 0 on Front -> Col (MaxCol - 1 - 0) on Back.
                     // Rows match (Top row front is Top row back).
 
-                    currentPagePositions.forEach(pos => {
-                        // Mirror Column
-                        const mirrorCol = colCount - 1 - pos.col;
-                        const backX = marginX + (mirrorCol * fullWidth);
-                        const backY = marginY + (pos.row * fullHeight);
+                    for (const pos of currentPageData) {
+                        // Capture the specific employee's back card
+                        const backElementId = `card-print-back-${pos.empId}`;
+                        const backElement = document.getElementById(backElementId);
 
-                        doc.addImage(backCardImgData!, 'JPEG', backX + bleed, backY + bleed, cardWidth, cardHeight);
-                        drawCutMarks(backX, backY);
-                    });
+                        if (backElement) {
+                            try {
+                                const backCanvas = await html2canvas(backElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+                                const backImgData = backCanvas.toDataURL('image/jpeg', 1.0);
+
+                                if (backImgData !== 'data:,') {
+                                    // Mirror Column for proper alignment when printing double-sided
+                                    const mirrorCol = colCount - 1 - pos.col;
+                                    const backX = marginX + (mirrorCol * fullWidth);
+                                    const backY = marginY + (pos.row * fullHeight);
+
+                                    doc.addImage(backImgData, 'JPEG', backX + bleed, backY + bleed, cardWidth, cardHeight);
+                                    drawCutMarks(backX, backY);
+                                }
+                            } catch (e) {
+                                console.error("Error capturing back card", e);
+                            }
+                        }
+                    }
                 }
 
                 // If not last item, add new Front page for next batch
                 if (i < employees.length - 1) {
                     doc.addPage();
                     countOnPage = 0;
-                    currentPagePositions = [];
+                    currentPageData = [];
                     pageIndex++;
                 }
             }
@@ -162,3 +153,4 @@ export const generatePDF = async (
 
     return doc;
 };
+

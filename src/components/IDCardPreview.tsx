@@ -23,6 +23,7 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
     }
 
     if (side === 'back') {
+        // Back side mirrors the front side content for proper double-sided printing
         return (
             <div
                 className="id-card-shadow"
@@ -40,49 +41,97 @@ export const IDCardPreview: React.FC<IDCardPreviewProps> = ({ company, employee,
                     border: `${1 * scale}px solid #e2e8f0`
                 }}
             >
-                {/* Top Header Strip - matching front */}
+                {/* Header with Company Name - Same as front */}
                 <div style={{
                     width: '100%',
                     height: `${36 * scale}px`,
                     background: `linear-gradient(180deg, ${company.accentColor} 0%, ${company.accentColor}dd 100%)`,
-                    flexShrink: 0
-                }}></div>
-
-                {/* Logo Area - Centered */}
-                <div style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: `${15 * scale}px`
-                }}>
-                    {company.logoUrl && (
-                        <div style={{ width: '85%', height: '70%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <img src={company.logoUrl} alt="Logo" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                        </div>
-                    )}
-                    {!company.logoUrl && (
-                        <div style={{ textAlign: 'center', opacity: 0.6 }}>
-                            <div style={{ fontSize: `${18 * scale}px`, fontWeight: 'bold', color: company.accentColor }}>{company.name}</div>
-                            <div style={{ fontSize: `${9 * scale}px`, marginTop: `${4 * scale}px`, color: '#64748b' }}>COMPANY LOGO</div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Bottom Strip with company name */}
-                <div style={{
-                    width: '100%',
-                    height: `${28 * scale}px`,
-                    background: `linear-gradient(180deg, ${company.accentColor}dd 0%, ${company.accentColor} 100%)`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0
                 }}>
-                    <div style={{ fontSize: `${8 * scale}px`, color: '#fff', textTransform: 'lowercase', letterSpacing: '0.05em', fontWeight: 600 }}>
-                        {company.website}
+                    <div style={{ fontWeight: 800, fontSize: `${13 * scale}px`, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>
+                        {company.name}
                     </div>
                 </div>
+
+                {/* Content Layer - Same as front */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: `${8 * scale}px ${12 * scale}px ${4 * scale}px` }}>
+
+                    {/* Photo - Centered */}
+                    <div style={{
+                        width: `${90 * scale}px`,
+                        height: `${90 * scale}px`,
+                        borderRadius: `${8 * scale}px`,
+                        border: `${2 * scale}px solid #e2e8f0`,
+                        overflow: 'hidden',
+                        backgroundColor: '#f8fafc',
+                        marginBottom: `${5 * scale}px`,
+                        flexShrink: 0
+                    }}>
+                        {employee.photoUrl ? (
+                            <img src={employee.photoUrl} alt="E" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', fontSize: `${28 * scale}px` }}>
+                                👤
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Employee Name */}
+                    <h2 style={{ margin: `0 0 ${4 * scale}px`, fontSize: `${14 * scale}px`, fontWeight: 800, color: '#0f172a', textAlign: 'center' }}>
+                        {employee.name}
+                    </h2>
+
+                    {/* Details - Vertical List */}
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: `${2 * scale}px`, flex: 1 }}>
+
+                        {/* ID */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>ID NO:</span>
+                            <span style={{ fontSize: `${10 * scale}px`, color: '#0f172a', fontWeight: 700 }}>{employee.employeeId}</span>
+                        </div>
+
+                        {/* Dept */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>DEPT:</span>
+                            <span style={{ fontSize: `${10 * scale}px`, color: '#0f172a', fontWeight: 600 }}>{employee.department}</span>
+                        </div>
+
+                        {/* Phone */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>PHONE:</span>
+                            <span style={{ fontSize: `${10 * scale}px`, color: '#0f172a' }}>{employee.phone || 'N/A'}</span>
+                        </div>
+
+                        {/* Emergency */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: `${9 * scale}px`, color: '#ef4444', fontWeight: 600 }}>EMERGENCY:</span>
+                            <span style={{ fontSize: `${10 * scale}px`, color: '#ef4444', fontWeight: 700 }}>{employee.emergencyContact || 'N/A'}</span>
+                        </div>
+
+                        {/* Address */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: `${1 * scale}px` }}>
+                            <span style={{ fontSize: `${9 * scale}px`, color: '#64748b', fontWeight: 600 }}>ADDRESS:</span>
+                            <span style={{ fontSize: `${9 * scale}px`, color: '#0f172a', lineHeight: 1.3 }}>
+                                {employee.address || 'N/A'}
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* Zone Color Strip - Same as front */}
+                {employee.zoneColor && (
+                    <div style={{
+                        height: `${22 * scale}px`,
+                        backgroundColor: employee.zoneColor,
+                        width: '100%',
+                        flexShrink: 0
+                    }}></div>
+                )}
             </div>
         );
     }

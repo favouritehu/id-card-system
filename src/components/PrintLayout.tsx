@@ -224,16 +224,17 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) 
                             </div>
                         ))}
                     </div>
-                    {/* Hidden Back Card Template (Single instance) */}
+                    {/* Hidden Back Cards for Each Employee */}
                     <div
                         style={{
-                            position: 'fixed', top: 0, left: 0, width: '400px', zIndex: -1001, opacity: 0, pointerEvents: 'none'
+                            position: 'fixed', top: 0, left: 0, width: '2000px', zIndex: -1001, opacity: 0, pointerEvents: 'none'
                         }}
                     >
-                        <div id="card-print-back-template" style={{ display: 'inline-block' }}>
-                            {/* Use first employee as dummy for props needed, though back side uses company mostly */}
-                            <IDCardPreview company={company} employee={employees[0]} scale={2} side="back" />
-                        </div>
+                        {employees.map(emp => (
+                            <div key={`back-${emp.id}`} id={`card-print-back-${emp.id}`} style={{ display: 'inline-block', margin: '0' }}>
+                                <IDCardPreview company={company} employee={emp} scale={2} side="back" />
+                            </div>
+                        ))}
                     </div>
                 </>
             )}
