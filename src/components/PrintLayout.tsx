@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Download, Loader } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Download, Loader, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { CompanyConfig, Employee } from '../types';
 import { IDCardPreview } from './IDCardPreview';
 import { generatePDF } from '../utils/pdfGenerator';
 import type { PrintConfig } from '../types';
+
+const ITEMS_PER_PAGE = 12; // Number of cards to show per page
 
 interface PrintLayoutProps {
     company: CompanyConfig;
@@ -12,6 +14,7 @@ interface PrintLayoutProps {
 
 export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) => {
     const [isGenerating, setIsGenerating] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const [printConfig, setPrintConfig] = useState<PrintConfig>({
         scale: 1,
         showBleed: true,
@@ -19,6 +22,19 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) 
         pageFormat: 'a4',
         orientation: 'portrait'
     });
+
+    // Pagination calculations
+    const totalPages = Math.ceil(employees.length / ITEMS_PER_PAGE);
+    const paginatedEmployees = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return employees.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [employees, currentPage]);
+
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     // Selection & Quantity State
     const [selections, setSelections] = useState<Record<string, number>>(() => {
@@ -151,7 +167,7 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) 
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                            {employees.map(emp => {
+                            {paginatedEmployees.map(emp => {
                                 const count = selections[emp.id] || 0;
                                 const isSelected = count > 0;
                                 return (
@@ -198,6 +214,97 @@ export const PrintLayout: React.FC<PrintLayoutProps> = ({ company, employees }) 
                                 );
                             })}
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                marginTop: '1.5rem',
+                                paddingTop: '1rem',
+                                borderTop: '1px solid var(--color-border)'
+                            }}>
+                                <button
+                                    onClick={() => goToPage(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.25rem',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: 'var(--radius-md)',
+                                        border: '1px solid var(--color-border)',
+                                        backgroundColor: currentPage === 1 ? '#f1f5f9' : '#fff',
+                                        cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                        opacity: currentPage === 1 ? 0.5 : 1,
+                                        color: 'var(--color-text)',
+                                        fontWeight: 500
+                                    }}
+                                >
+                                    <ChevronLeft size={16} />
+                                    Previous
+                                </button>
+
+                                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                        <button
+                                            key={page}
+                                            onClick={() => goToPage(page)}
+                                            style={{
+                                                width: '36px',
+                                                height: '36px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                borderRadius: 'var(--radius-md)',
+                                                border: currentPage === page ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                                                backgroundColor: currentPage === page ? 'var(--color-primary)' : '#fff',
+                                                color: currentPage === page ? '#fff' : 'var(--color-text)',
+                                                cursor: 'pointer',
+                                                fontWeight: currentPage === page ? 600 : 400
+                                            }}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={() => goToPage(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.25rem',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: 'var(--radius-md)',
+                                        border: '1px solid var(--color-border)',
+                                        backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#fff',
+                                        cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                        opacity: currentPage === totalPages ? 0.5 : 1,
+                                        color: 'var(--color-text)',
+                                        fontWeight: 500
+                                    }}
+                                >
+                                    Next
+                                    <ChevronRight size={16} />
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Page Info */}
+                        {totalPages > 1 && (
+                            <div style={{
+                                textAlign: 'center',
+                                marginTop: '0.75rem',
+                                fontSize: '0.875rem',
+                                color: 'var(--color-text-secondary)'
+                            }}>
+                                Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, employees.length)} of {employees.length} employees
+                            </div>
+                        )}
                     </div>
 
                     {/* 

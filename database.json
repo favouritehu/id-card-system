@@ -39,6 +39,16 @@
       "address": "258 Defence Estate Phase-2",
       "zoneColor": "#eab308",
       "id": "86a2b378-e089-4684-b93e-485e826d74ac"
+    },
+    {
+      "name": "Test Employee 9",
+      "department": "EngEng",
+      "employeeId": "ENG-1037",
+      "phone": "",
+      "emergencyContact": "",
+      "address": "",
+      "zoneColor": "#ef4444",
+      "id": "c00feb8d-7774-410b-8989-764f8943f9da"
     }
   ]
 }
