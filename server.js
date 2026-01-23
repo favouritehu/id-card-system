@@ -23,6 +23,9 @@ const useMongoDb = !!MONGODB_URI;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
+// Enable trust proxy for reverse proxy support
+app.enable('trust proxy');
+
 // Basic Authentication - protects entire app
 app.use(basicAuth({
     users: { 'admin': APP_PASSWORD },
